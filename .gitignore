@@ -1,0 +1,9 @@
+# cache, compiled
+__pycache__/
+*.py[cod]
+
+# checkpoints
+.ipynb_checkpoints/
+
+# vim
+*.sw[po]
