@@ -1,3 +1,4 @@
+import nelta as nt
 class LabeledList:
     def __init__(self, data=None, index=None):
         if index is None:
@@ -14,8 +15,39 @@ class LabeledList:
             s += f'{index:{format_spec}} {str(data):>{vals_max_len}}\n'
         return s
 
+    def __iter__(self):
+        return iter(self.values)
+
     def __repr__(self):
         return self.__str__()
+
+    def __eq__(self, scalar):
+        if self.index:
+            return LabeledList([v == scalar for v in self.values], self.index)
+        else:
+            return LabeledList([v == scalar for v in self.values])
+
+    def __ne__(self, scalar):
+        if self.index:
+            return LabeledList([v != scalar for v in self.values], self.index)
+        else:
+            return LabeledList([v != scalar for v in self.values])
+
+    def __gt__(self, scalar):
+        if self.index:
+            return LabeledList([v > scalar if v is not None else False for v in self.values], self.index)
+        else:
+            return LabeledList([v > scalar if v is not None else False for v in self.values])
+
+    def __lt__(self, scalar):
+        if self.index:
+            return LabeledList([v < scalar if v is not None else False for v in self.values], self.index)
+        else:
+            return LabeledList([v < scalar if v is not None else False for v in self.values])
+
+    def map(self, f):
+        values = [f(val) if val is not None else None for val in self.values]
+        return LabeledList(values, self.index)
 
     def __getitem__(self, key_list):
         # try our best to make list of keys:
@@ -75,11 +107,16 @@ class LabeledList:
     
 class Table:
     # implement your table class here
-    pass
+    def __init__(self, data, index=None, columns=None):
+        pass
 
 
 if __name__ == '__main__':
     # add your manual tests here
+    def squared(n):
+        return n ** 2
+    print(nt.LabeledList([5, 6, 7]).map(squared))
     pass
+
 
 
