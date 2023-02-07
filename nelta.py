@@ -1,4 +1,5 @@
 import nelta as nt
+import csv
 class LabeledList:
     def __init__(self, data=None, index=None):
         if index is None:
@@ -104,19 +105,85 @@ class LabeledList:
             raise KeyError(f'Index label not found {k}')
         return matches
 
+
     
 class Table:
     # implement your table class here
     def __init__(self, data, index=None, columns=None):
-        pass
+        self.data = data
+        self.index = list(range(len(data))) if index is None else index
+        self.columns = list(range(len(data[0]))) if columns is None else columns
+
+    def __str__(self):
+        table = []
+        table.append(["{:^10}".format("     ")] + ["{:^10}".format(c) for c in self.columns])
+        for i, row in enumerate(self.data):
+            table.append(["{:^10}".format(self.index[i])] + ["{:^10}".format(r) for r in row])
+        return "\n".join(["".join(r) for r in table])
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __getitem__(self, key):
+        if isinstance(key, list):
+            if type(key[0]) in [bool, True, False]:
+                data = [self.data[i] for i in range(len(self.data)) if key[i]]
+                index = [self.index[i] for i in range(len(self.data)) if key[i]]
+                return Table(data, index, self.columns)
+            else:
+                columns = key
+                data = [[row[self.columns.index(col)] for col in key] for row in self.data]
+                return Table(data, self.index, columns)
+        else:
+            column_indices = [i for i, col in enumerate(self.columns) if col == key]
+            if len(column_indices) == 0:
+                raise KeyError(f'Column not found: {key}')
+            elif len(column_indices) == 1:
+                return LabeledList([row[column_indices[0]] for row in self.data], self.index)
+            else:
+                data = [[row[i] for i in column_indices] for row in self.data]
+                columns = [self.columns[i] for i in column_indices]
+                return Table(data, self.index, columns)
+
+    def head(self, n):
+        data = self.data[:n]
+        index = self.index[:n]
+        return Table(data, index, self.columns)
+
+    def tail(self, n):
+        data = self.data[-n:]
+        index = self.index[-n:]
+        return Table(data, index, self.columns)
+
+    def shape(self):
+        return (len(self.data), len(self.columns))
 
 
-if __name__ == '__main__':
-    # add your manual tests here
-    def squared(n):
-        return n ** 2
-    print(nt.LabeledList([5, 6, 7]).map(squared))
+
+def read_csv(fn):
+    data = []
+    with open(fn, "r") as f:
+        reader = csv.reader(f)
+        header = next(reader)
+        columns = header
+        for i, row in enumerate(reader):
+            if not all(x == "" for x in row):
+                data_row = []
+                for item in row:
+                    try:
+                        data_row.append(float(item))
+                    except ValueError:
+                        data_row.append(item)
+                data.append(data_row)
+    index = list(range(len(data)))
+    return Table(data, index, columns)
+
+
+if __name__ == '__main__':  
+    t = nt.read_csv('recalls-truncated.csv')
+    print(nt.LabeledList([0, 1, 2, 3, 4]) > 2)
+    # ll = nt.LabeledList([1, 2, 3, 4, 5], ['A', 'BB', 'BB', 'CCC', 'D'])
+    # print(ll[nt.LabeledList(['A', 'BB'])])
+    d= [[1000, 10, 100,1, 1.0], [200,2,2.0,2000,20], [3,300,3000,3.0, 30],[40, 4000,4.0, 400, 4],[7,8, 6, 3,41]]
+    # print(t[LabeledList(['a', 'b'])])
     pass
-
-
-
