@@ -116,10 +116,10 @@ class Table:
 
     def __str__(self):
         table = []
-        table.append(["{:^10}".format("     ")] + ["{:^10}".format(c) for c in self.columns])
+        table.append(['{:^10}'.format('     ')] + ['{:^10}'.format(c) for c in self.columns])
         for i, row in enumerate(self.data):
-            table.append(["{:^10}".format(self.index[i])] + ["{:^10}".format(r) for r in row])
-        return "\n".join(["".join(r) for r in table])
+            table.append(['{:^10}'.format(self.index[i])] + ['{:^10}'.format(r) for r in row])
+        return '\n'.join([''.join(r) for r in table])
 
     def __repr__(self):
         return self.__str__()
@@ -162,12 +162,12 @@ class Table:
 
 def read_csv(fn):
     data = []
-    with open(fn, "r") as f:
+    with open(fn, 'r') as f:
         reader = csv.reader(f)
         header = next(reader)
         columns = header
         for i, row in enumerate(reader):
-            if not all(x == "" for x in row):
+            if not all(x == '' for x in row):
                 data_row = []
                 for item in row:
                     try:
@@ -180,10 +180,10 @@ def read_csv(fn):
 
 
 if __name__ == '__main__':  
-    t = nt.read_csv('recalls-truncated.csv')
-    d= [[1000, 10, 100,1, 1.0], [200,2,2.0,2000,20], [3,300,3000,3.0, 30],[40, 4000,4.0, 400, 4],[7,8, 6, 3,41]]
-    t = Table([[1, 2, 3], [4, 5, 6]], columns=['a', 'b', 'a'])
-    print(t[[True, False, False]])
+    # t = nt.read_csv('recalls-truncated.csv')
+    # d= [[1000, 10, 100,1, 1.0], [200,2,2.0,2000,20], [3,300,3000,3.0, 30],[40, 4000,4.0, 400, 4],[7,8, 6, 3,41]]
+    # t = Table([[1, 2, 3], [4, 5, 6]], columns=['a', 'b', 'a'])
+    # print(t[[True, False, False]])
     # ll = nt.LabeledList([1, 2, 3, 4, 5], ['A', 'BB', 'BB', 'CCC', 'D'])
     # print(ll[nt.LabeledList(['A', 'BB'])])
 
