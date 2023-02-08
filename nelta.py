@@ -134,6 +134,14 @@ class Table:
                 columns = col_list
                 data = [[row[self.columns.index(col)] for col in col_list] for row in self.data]
                 return Table(data, self.index, columns)
+        elif isinstance(col_list, LabeledList):
+            column_indices = [i for i, col in enumerate(self.columns) if col in col_list]
+            if len(column_indices) == 0:
+                raise KeyError(f'Column(s) not found: {col_list.index}')
+            else:
+                data = [[row[i] for i in column_indices] for row in self.data]
+                columns = [self.columns[i] for i in column_indices]
+                return Table(data, self.index, columns)
         else:
             column_indices = [i for i, col in enumerate(self.columns) if col == col_list]
             if len(column_indices) == 0:
@@ -188,4 +196,7 @@ if __name__ == '__main__':
     # print(ll[nt.LabeledList(['A', 'BB'])])
 
     # print(t[LabeledList(['a', 'b'])])
+    d= [[1000, 10, 100,1, 1.0], [200,2,2.0,2000,20], [3,300,3000,3.0, 30],[40, 4000,4.0, 400, 4],[7,8, 6, 3,41]]
+    t = Table(d, ['foo', 'bar', 'bazzy', 'qux', 'quxx'], ['a', 'b', 'c', 'd', 'e'])
+    print(t[LabeledList(['a', 'b'])])
     pass
