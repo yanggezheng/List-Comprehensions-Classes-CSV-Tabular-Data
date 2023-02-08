@@ -124,20 +124,20 @@ class Table:
     def __repr__(self):
         return self.__str__()
 
-    def __getitem__(self, key):
-        if isinstance(key, list):
-            if type(key[0]) in [bool, True, False]:
-                data = [self.data[i] for i in range(len(self.data)) if key[i]]
-                index = [self.index[i] for i in range(len(self.data)) if key[i]]
+    def __getitem__(self, col_list):
+        if isinstance(col_list, list):
+            if type(col_list[0]) in [bool, True, False]:
+                data = [self.data[i] for i in range(len(self.data)) if col_list[i]]
+                index = [self.index[i] for i in range(len(self.data)) if col_list[i]]
                 return Table(data, index, self.columns)
             else:
-                columns = key
-                data = [[row[self.columns.index(col)] for col in key] for row in self.data]
+                columns = col_list
+                data = [[row[self.columns.index(col)] for col in col_list] for row in self.data]
                 return Table(data, self.index, columns)
         else:
-            column_indices = [i for i, col in enumerate(self.columns) if col == key]
+            column_indices = [i for i, col in enumerate(self.columns) if col == col_list]
             if len(column_indices) == 0:
-                raise KeyError(f'Column not found: {key}')
+                raise KeyError(f'Column not found: {col_list}')
             elif len(column_indices) == 1:
                 return LabeledList([row[column_indices[0]] for row in self.data], self.index)
             else:
@@ -181,9 +181,11 @@ def read_csv(fn):
 
 if __name__ == '__main__':  
     t = nt.read_csv('recalls-truncated.csv')
-    print(nt.LabeledList([0, 1, 2, 3, 4]) > 2)
+    d= [[1000, 10, 100,1, 1.0], [200,2,2.0,2000,20], [3,300,3000,3.0, 30],[40, 4000,4.0, 400, 4],[7,8, 6, 3,41]]
+    t = Table([[1, 2, 3], [4, 5, 6]], columns=['a', 'b', 'a'])
+    print(t[[True, False, False]])
     # ll = nt.LabeledList([1, 2, 3, 4, 5], ['A', 'BB', 'BB', 'CCC', 'D'])
     # print(ll[nt.LabeledList(['A', 'BB'])])
-    d= [[1000, 10, 100,1, 1.0], [200,2,2.0,2000,20], [3,300,3000,3.0, 30],[40, 4000,4.0, 400, 4],[7,8, 6, 3,41]]
+
     # print(t[LabeledList(['a', 'b'])])
     pass
