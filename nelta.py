@@ -135,22 +135,22 @@ class Table:
                 data = [[row[self.columns.index(col)] for col in col_list] for row in self.data]
                 return Table(data, self.index, columns)
         elif isinstance(col_list, LabeledList):
-            column_indices = [i for i, col in enumerate(self.columns) if col in col_list]
-            if len(column_indices) == 0:
+            index = [i for i, col in enumerate(self.columns) if col in col_list]
+            if len(index) == 0:
                 raise KeyError(f'Column(s) not found: {col_list.index}')
             else:
-                data = [[row[i] for i in column_indices] for row in self.data]
-                columns = [self.columns[i] for i in column_indices]
+                data = [[row[i] for i in index] for row in self.data]
+                columns = [self.columns[i] for i in index]
                 return Table(data, self.index, columns)
         else:
-            column_indices = [i for i, col in enumerate(self.columns) if col == col_list]
-            if len(column_indices) == 0:
+            index = [i for i, col in enumerate(self.columns) if col == col_list]
+            if len(index) == 0:
                 raise KeyError(f'Column not found: {col_list}')
-            elif len(column_indices) == 1:
-                return LabeledList([row[column_indices[0]] for row in self.data], self.index)
+            elif len(index) == 1:
+                return LabeledList([row[index[0]] for row in self.data], self.index)
             else:
-                data = [[row[i] for i in column_indices] for row in self.data]
-                columns = [self.columns[i] for i in column_indices]
+                data = [[row[i] for i in index] for row in self.data]
+                columns = [self.columns[i] for i in index]
                 return Table(data, self.index, columns)
 
     def head(self, n):
